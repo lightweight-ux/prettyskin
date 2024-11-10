@@ -6,6 +6,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 
+
 // CartSummary Component
 function CartSummary({ items }) {
     const [open, setOpen] = useState(false);

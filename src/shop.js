@@ -8,6 +8,11 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { collection, getDocs } from 'firebase/firestore';
 import { auth, db } from './firebase-configs';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
+import CheckoutForm from './CheckoutForm';
+
+const stripePromise = loadStripe('pk_live_51QHDIYAS1xt2wKUCi7Itw9sVj6QUMxZ49CjS0v0ehDCxkVaiUM3kRCNjaxEa6JFFZ9ABNbAL5PxNoD5fvzpjHBju004YXQ52E3');
 
 const AppContainer = styled.div`
   text-align: center;
@@ -63,15 +68,19 @@ function CartSummary({ items, updateQuantity, removeItem }) {
         return items.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2);
     };
 
+    const getTotalItems = () => {
+        return items.reduce((sum, item) => sum + item.quantity, 0);
+    };
+
     return (
-        <div style={{minwidth: '300px'}}>
+        <Elements stripe={stripePromise}>
             <Button
                 variant="contained"
-                color="black"
+                color="warning"
                 startIcon={<ShoppingCartIcon />}
                 onClick={toggleDrawer(true)}
             >
-                Cart ({items.length})
+                Cart ({getTotalItems()})
             </Button>
             <StyledDrawer anchor="right" open={open} onClose={toggleDrawer(false)}>
                 <List>
@@ -94,18 +103,10 @@ function CartSummary({ items, updateQuantity, removeItem }) {
                         <ListItemText primary="Subtotal" />
                         <Typography variant="h6">${calculateSubtotal()}</Typography>
                     </ListItem>
-                    <ListItem>
-                        <Button
-                            variant="contained"
-                            style={{ width: '100%', backgroundColor: 'black', color: '#fafafa' }}
-                            onClick={() => alert('Proceeding to checkout')}
-                        >
-                            Checkout
-                        </Button>
-                    </ListItem>
+                    <CheckoutForm items={items} />
                 </List>
             </StyledDrawer>
-        </div>
+        </Elements>
     );
 }
 
