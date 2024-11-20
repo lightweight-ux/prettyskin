@@ -46,6 +46,7 @@ const CheckoutForm = ({ items }) => {
       } else {
         if (result.paymentIntent.status === 'succeeded') {
           setSuccessMessage('Payment succeeded!');
+          setOpen(true);
         }
         console.log('PaymentIntent:', result.paymentIntent);
       }
@@ -93,9 +94,16 @@ const CheckoutForm = ({ items }) => {
         </Alert>
       </Snackbar>
       {successMessage && (
-        <Typography variant="body2" color="success" sx={{ marginTop: '20px' }}>
-          {successMessage}
-        </Typography>
+        <Snackbar
+          open={true}
+          autoHideDuration={6000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        >
+          <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+            {successMessage}
+          </Alert>
+        </Snackbar>
       )}
     </Box>
   );
