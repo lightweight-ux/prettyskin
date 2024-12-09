@@ -24,13 +24,17 @@ const CheckoutForm = ({ items }) => {
     setLoading(true);
 
     try {
-      const response = await fetch('https://pretty-skin-server-cdb19d6fdc9e.herokuapp.com/create-payment-intent', {
+      const response = await fetch('http://localhost:4242/create-checkout-session', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ items }),
       });
+
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.statusText}`);
+      }
 
       const { clientSecret } = await response.json();
 
